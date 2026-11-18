@@ -1,7 +1,7 @@
 # CozyClay API Worker
 
 The Cloudflare Worker behind `api.cozyclay.org`: Google sign-in. It lives in this repository under
-`AGPL-3.0-or-later` like everything else.
+`MIT` like everything else.
 
 CozyClay 3 removed the hosted Kimodo motion queue (`/jobs`, `/r/:token.npz`,
 `/worker/*`), its composer and ticket pages (`demo/`, `d/`) and the GPU-box

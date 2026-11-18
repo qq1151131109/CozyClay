@@ -1,6 +1,6 @@
 # CozyClay
 
-> Free, open source previs (previsualization) software that runs in a Chromium browser. Block a scene with primitives, pose characters, author camera moves and cuts on a timeline, then hand the same shot to an AI video model (Seedance, Kling, Veo) as a first frame or a reference clip. AGPL-3.0. Install: `npx cozyclay`.
+> Free, open source previs (previsualization) software that runs in a Chromium browser. Block a scene with primitives, pose characters, author camera moves and cuts on a timeline, then hand the same shot to an AI video model (Seedance, Kling, Veo) as a first frame or a reference clip. MIT. Install: `npx cozyclay`.
 
 ## Pages
 

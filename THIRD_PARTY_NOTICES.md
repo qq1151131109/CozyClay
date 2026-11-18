@@ -101,7 +101,7 @@ in `src/text/fonts/`, under its own permissive licence (text in the same folder)
 The rigs in `public/models/` are Mixamo characters from Adobe. Adobe permits
 their use in projects but not the distribution of the raw character files, which
 is what shipping them in this repository, the npm package and the hosted site
-amounts to. They are also outside the scope of this repository's AGPL-3.0 grant:
+amounts to. They are also outside the scope of this repository's MIT grant:
 nothing here relicenses them, and a fork does not acquire the right to
 redistribute them.
 
@@ -170,4 +170,4 @@ The Auto Pose tool (`src/poser/`) runs its pose network in the browser with `onn
 
 ## CozyClay license scope
 
-The CozyClay combined work in this repository is distributed under AGPL-3.0-or-later, subject to the transition details in `LICENSING.md`. That license does not replace or relicense Three.js, ARDY, ARDY model checkpoints, the bundled fonts, the character rigs, or any other third-party component.
+The CozyClay combined work in this repository is distributed under MIT, subject to the transition details in `LICENSING.md`. That license does not replace or relicense Three.js, ARDY, ARDY model checkpoints, the bundled fonts, the character rigs, or any other third-party component.

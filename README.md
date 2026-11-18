@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img alt="License: AGPL-3.0" src="https://img.shields.io/badge/license-AGPL--3.0-blue"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
   <a href="https://www.npmjs.com/package/cozyclay"><img alt="npm" src="https://img.shields.io/npm/v/cozyclay"></a>
   <img alt="Node 22.19+" src="https://img.shields.io/badge/node-22.19%2B-brightgreen">
   <a href="https://github.com/HaD0Yun/CozyClay/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/HaD0Yun/CozyClay?style=flat"></a>
@@ -127,6 +127,6 @@ Found a bug or want a feature? [Open an issue](https://github.com/HaD0Yun/CozyCl
 
 ## License
 
-AGPL-3.0-or-later. See [`LICENSE`](LICENSE), [`LICENSING.md`](LICENSING.md) and
+MIT. See [`LICENSE`](LICENSE), [`LICENSING.md`](LICENSING.md) and
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). Made by [Doyun](https://github.com/HaD0Yun) at
 [NomaDamas](https://github.com/NomaDamas).
