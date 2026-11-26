@@ -18,7 +18,7 @@ const NODE_FILES = ["test/motion3/verify-motion3-pocket.mjs", "test/motion3/veri
 	"test/verify-proxy-figure-bounds.mjs", "test/verify-sample-motions.mjs", "test/verify-guest-start.mjs", "test/verify-install.mjs",
 	"test/verify-character-capabilities.mjs", "test/verify-character-name.mjs", "test/verify-pose-entry.mjs", "test/verify-test-shards.mjs", "test/verify-select-tests.mjs",
 	"test/verify-root-path.mjs", "test/verify-tutorial-recorder.mjs", "test/motion3/verify-motion3-bricks.mjs", "test/motion3/verify-motion3-autofill.mjs", "test/motion3/verify-motion3-native.mjs", "test/verify-studio-task-scene-host.mjs", "test/motion3/verify-motion3-poses.mjs",
-	"test/verify-studio-elements.mjs", "test/verify-world-scale.mjs", "test/verify-camera-roll.mjs", "test/verify-camera-readouts.mjs", "test/verify-scene-graph.mjs", "test/verify-video-frames.mjs", "test/verify-video-import.mjs", "test/verify-video-import-model.mjs",
+	"test/verify-studio-elements.mjs", "test/verify-world-scale.mjs", "test/verify-camera-roll.mjs", "test/verify-camera-readouts.mjs", "test/verify-scene-graph.mjs", "test/verify-video-frames.mjs", "test/verify-video-import.mjs", "test/verify-video-import-model.mjs", "test/verify-video-timeline.mjs", "test/verify-video-pose.mjs", "test/verify-video-shot.mjs",
 	"test/bus/verify-view-mode-pose.mjs",
 	"test/verify-studio-actions.mjs",
 	"test/motion/verify-collision-blockers.mjs",
@@ -248,7 +248,7 @@ const BROWSER_FILES = [
 	"test/qa-clipboard-paste-browser.mjs",
 	"test/qa-rail-ring-browser.mjs",
 	"test/qa-rail-reach-browser.mjs",
-	"test/qa-speed-graph-browser.mjs", "test/verify-video-import-browser.mjs",
+	"test/qa-speed-graph-browser.mjs", "test/verify-video-import-browser.mjs", "test/verify-video-timeline-browser.mjs",
 ];
 
 // The inventory sweep only picks up `verify*.mjs`; a browser suite named for

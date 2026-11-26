@@ -4,6 +4,8 @@ import { useStudioShell } from "../shell/studio-shell-context.js";
 import { useVideoImport } from "../use-video-import.js";
 import { VIDEO_IMPORT_OPEN_EVENT } from "../video-import-events.js";
 import VideoImportPanel from "./VideoImportPanel.jsx";
+import VideoAnalysisPanel from "./VideoAnalysisPanel.jsx";
+import { importVideoShot } from "../video-shot-import.js";
 
 /**
  * The video → blockout session: it owns the dialog's open state, the run, the
@@ -14,6 +16,7 @@ export default function VideoImportSession() {
 	const { run: runBus } = useBus();
 	const { buildStudioAgentContext, frameAll, renderBlockoutClip } = useStudioShell();
 	const [open, setOpen] = useState(false);
+	const [analysisOpen, setAnalysisOpen] = useState(false);
 	const [opens, setOpens] = useState(0);
 	const [clip, setClip] = useState({ phase: "idle", url: null, name: null });
 	const { state, start, cancel, reset } = useVideoImport({
@@ -28,6 +31,7 @@ export default function VideoImportSession() {
 				return { phase: "idle", url: null, name: null };
 			});
 			setOpens((count) => count + 1);
+			setAnalysisOpen(false);
 			setOpen(true);
 		};
 		globalThis.window?.addEventListener(VIDEO_IMPORT_OPEN_EVENT, onOpen);
@@ -61,6 +65,15 @@ export default function VideoImportSession() {
 		}
 		return result;
 	}, [start, frameAll, renderBlockoutClip]);
+	const importShot = useCallback(async (graph, shot) => {
+		const result = await importVideoShot({
+			run: (action, args) => runBus(action, args, { origin: "ui" }), graph, shot,
+			originalSceneId: buildStudioAgentContext?.()?.host?.sceneId,
+		});
+		frameAll?.();
+		return result;
+	}, [runBus, frameAll, buildStudioAgentContext]);
 	if (!open) return null;
-	return <VideoImportPanel key={opens} onClose={onClose} state={state} clip={clip} onStart={startAndFrame} onCancel={cancel} />;
+	if (analysisOpen) return <VideoAnalysisPanel key={opens} onClose={onClose} onImportShot={importShot} />;
+	return <VideoImportPanel key={opens} onClose={onClose} state={state} clip={clip} onStart={startAndFrame} onCancel={cancel} onAnalyze={() => { cancel(); setAnalysisOpen(true); }} />;
 }
