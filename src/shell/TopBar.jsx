@@ -4,6 +4,7 @@ import MenuBar from "./MenuBar.jsx";
 import { SaveState } from "./StatusBar.jsx";
 import { ko } from "../locale.js";
 import UpdateChip from "../update/UpdateChip.jsx";
+import { openVideoImport } from "../video-import-events.js";
 import "./topbar.css";
 
 // 2a top bar: File/Edit/Window/Help. The MCP state is no longer shown; its
@@ -18,6 +19,15 @@ export default function TopBar({ preferences }) {
 		<header className="topbar v2-topbar" data-rec-state={recState}>
 			<MenuBar preferences={preferences} />
 			<div className="topbar-spacer" />
+			<button
+				type="button"
+				className="topbar-video-import"
+				data-testid="topbar-video-import"
+				title={ko("Import a reference video as a blockout", "참조 비디오를 블록아웃으로 가져오기", "将参考视频导入为白模")}
+				onClick={openVideoImport}
+			>
+				{ko("Video → blockout", "비디오 → 블록아웃", "视频 → 白模")}
+			</button>
 			<UpdateChip />
 			<span
 				hidden

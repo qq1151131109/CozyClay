@@ -38,6 +38,7 @@
     "preview": "vite preview",
     "test:motion": "node tools/run-tests.mjs --scope motion",
     "test:ik-browser": "node tools/qa-browser.mjs -- node test/verify-ik-browser.mjs",
+    "test:video-import-browser": "node tools/qa-browser.mjs -- node test/verify-video-import-browser.mjs",
     "demo:api": "npm --prefix workers/api run dev",
     "demo:api:install": "npm --prefix workers/api ci",
     "qa:browser": "node tools/qa-browser.mjs --",

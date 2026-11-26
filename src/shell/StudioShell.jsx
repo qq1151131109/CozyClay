@@ -10,6 +10,7 @@ import DetailsSlot from "./DetailsSlot.jsx";
 import BottomDock from "./BottomDock.jsx";
 import StatusBar from "./StatusBar.jsx";
 import PreferencesSlot from "./PreferencesSlot.jsx";
+import VideoImportSession from "../panels/VideoImportSession.jsx";
 import "./shell.css";
 import "./glass.css";
 import "./glass-regions.css";
@@ -139,6 +140,7 @@ export default function StudioShell({ viewport, children, ...props }) {
 				</div>
 			</div>
 			<StatusBar embedded={embedded} />
+			<VideoImportSession />
 			{children}
 		</div>
 	);

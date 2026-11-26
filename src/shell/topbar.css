@@ -382,3 +382,26 @@
 		.app:not([data-embed-mode]) .v2-statusbar { gap: var(--sp-1, 8px); padding: 0 var(--sp-1, 8px); }
 	}
 }
+
+/* A reference video read back as a blockout: a quiet command beside the update chip. */
+.topbar-video-import {
+	padding: 3px 10px;
+	border: 1px solid var(--line);
+	border-radius: 999px;
+	background: transparent;
+	color: var(--muted);
+	font: inherit;
+	font-size: 11px;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.topbar-video-import:hover {
+	color: var(--fg);
+	border-color: var(--line2);
+}
+
+.topbar-video-import:focus-visible {
+	outline: 2px solid var(--accent-ring);
+	outline-offset: 2px;
+}
