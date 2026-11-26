@@ -1,6 +1,19 @@
 import { useCallback, useRef, useState } from "react";
 import { createAgentTransport } from "./workflow/agent-client.js";
 import { runVideoImport } from "./video-import.js";
+import { pickImageModel } from "./video-import-model.js";
+
+/** The model an import runs on: the one the author named, else the first the
+ * sidecar advertises that can see a picture. A transport that cannot answer
+ * leaves the choice to the sidecar, whose refusal is what the author then reads. */
+async function resolveModel(transport, named) {
+	if (named) return named;
+	try {
+		return pickImageModel(await transport.models()) ?? undefined;
+	} catch {
+		return undefined;
+	}
+}
 
 const IDLE = Object.freeze({ stage: "idle", message: "", error: null, entities: 0, frames: 0, subject: "", running: false });
 
@@ -22,13 +35,14 @@ export function useVideoImport({ run, readContext }) {
 		controller.current = control;
 		setState({ ...IDLE, stage: "frames", running: true, message: `Reading the clip…` });
 		try {
+			const chosen = await resolveModel(transport, model);
 			const result = await runVideoImport({
 				file,
 				turn: (request, onEvent, signal) => transport.turn(request, onEvent, signal),
 				run: (action, args) => run(action, args),
 				context: readContext?.() ?? null,
 				subject,
-				model,
+				model: chosen,
 				effort,
 				signal: control.signal,
 				onStage: (stage) => setState((current) => ({

@@ -124,18 +124,21 @@ try {
 	const readState = async () => JSON.parse(await evalJs(`(() => {
 		const status = document.querySelector('.video-import-status')?.textContent || '';
 		const error = document.querySelector('.video-import-error')?.textContent || '';
-		const done = Boolean(document.querySelector('.video-import-done'));
+		const done = document.querySelector('.video-import-done')?.textContent || '';
 		return JSON.stringify({ status, error, done });
 	})()`) || "{}");
-	let state = { status: "", error: "", done: false };
-	for (let index = 0; index < 60; index += 1) {
+	let state = { status: "", error: "", done: "" };
+	for (let index = 0; index < 90; index += 1) {
 		state = await readState();
 		if (state.done || state.error) break;
 		await new Promise((resolve) => setTimeout(resolve, 500));
 	}
 	console.log(`  run: ${JSON.stringify(state)}`);
-	check("the import reads its stills from the clip", state.done || /4 stills/.test(state.status), state.status);
-	check("a turn that cannot run is reported, not left hanging", state.done || Boolean(state.error), state.status);
+	check("the import reads its stills from the clip", Boolean(state.done) || /4 stills/.test(state.status), state.status);
+	check("a turn that cannot run is reported, not left hanging", Boolean(state.done) || Boolean(state.error), state.status);
+	// The whole point: a turn that can run places the blockout through the bus.
+	const placed = /Placed (\d+) set pieces/.exec(state.done || "");
+	check("the agent's answer became set pieces on the stage", Boolean(placed) && Number(placed[1]) > 0, state.done || state.error);
 
 	await evalJs("document.querySelector('.video-import-close')?.click()");
 	await new Promise((resolve) => setTimeout(resolve, 300));
