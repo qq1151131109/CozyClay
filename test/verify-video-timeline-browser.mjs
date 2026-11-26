@@ -9,6 +9,8 @@ import { cameraBrowser } from "./camera-browser-harness.mjs";
 const browser = await cameraBrowser();
 const outputDir = process.env.QA_OUT || mkdtempSync(join(tmpdir(), "cozyclay-frame-evidence-"));
 try {
+	await browser.evaluate("localStorage.setItem('cozyclay.locale', 'zh')");
+	await browser.navigate(new URL('/app/', browser.base));
 	const result = await browser.evaluate(`(async () => {
 		const { exportOffscreenVideo } = await import('/src/offscreen-export.js');
 		const { analyzeVideo, collectShotReferences } = await import('/src/video-decode.js');

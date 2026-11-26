@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ALL_FORMATS, BlobSource, CanvasSink, Input } from "mediabunny";
+import { videoText as text } from "../video-analysis-copy.js";
 
 const BONES = [[11, 12], [11, 13], [13, 15], [12, 14], [14, 16], [11, 23], [12, 24], [23, 24], [23, 25], [25, 27], [24, 26], [26, 28]];
 
@@ -18,7 +19,7 @@ export default function VideoFrameReview({ file, frame, observation }) {
 				const track = await input.getPrimaryVideoTrack();
 				const sample = await new CanvasSink(track, { width: Math.min(768, track.displayWidth) }).getCanvas(frame.timestamp + frame.duration / 2);
 				if (!active) return;
-				if (!sample || Math.abs(sample.timestamp - frame.timestamp) > 0.000002) throw new Error("预览解码帧与源时间戳不一致。");
+				if (!sample || Math.abs(sample.timestamp - frame.timestamp) > 0.000002) throw new Error(text.invalidPreview);
 				canvas.width = sample.canvas.width;
 				canvas.height = sample.canvas.height;
 				const context = canvas.getContext("2d");
@@ -49,7 +50,7 @@ export default function VideoFrameReview({ file, frame, observation }) {
 		return () => { active = false; input.dispose(); };
 	}, [file, frame, observation]);
 	return <div className="video-frame-review">
-		<canvas ref={canvasRef} data-testid="video-source-frame" role="img" aria-label={`源视频第 ${frame?.index ?? 0} 帧`} />
+		<canvas ref={canvasRef} data-testid="video-source-frame" role="img" aria-label={text.frameLabel(frame?.index ?? 0)} />
 		{error ? <p className="video-import-error" role="alert">{error}</p> : null}
 	</div>;
 }
