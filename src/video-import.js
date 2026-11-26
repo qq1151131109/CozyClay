@@ -88,6 +88,6 @@ export async function runVideoImport({
 	}
 	onStage({ stage: "applying", entities: parsed.graph.entities.length, message: `Placing ${parsed.graph.entities.length}…` });
 	const ids = applySceneGraph({ run }, parsed.graph);
-	onStage({ stage: "done", entities: ids.length, subject: parsed.graph.subject, message: "Blockout placed." });
-	return { graph: parsed.graph, ids, frames: frames.length, duration: read.duration };
+	onStage({ stage: "done", entities: ids.length, fitted: parsed.fitted, subject: parsed.graph.subject, message: "Blockout placed." });
+	return { graph: parsed.graph, ids, fitted: parsed.fitted, frames: frames.length, duration: read.duration };
 }

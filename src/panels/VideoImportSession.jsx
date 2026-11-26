@@ -12,7 +12,7 @@ import VideoImportPanel from "./VideoImportPanel.jsx";
  */
 export default function VideoImportSession() {
 	const { run: runBus } = useBus();
-	const { buildStudioAgentContext } = useStudioShell();
+	const { buildStudioAgentContext, frameAll } = useStudioShell();
 	const [open, setOpen] = useState(false);
 	const [opens, setOpens] = useState(0);
 	const { state, start, cancel, reset } = useVideoImport({
@@ -29,6 +29,14 @@ export default function VideoImportSession() {
 		return () => globalThis.window?.removeEventListener(VIDEO_IMPORT_OPEN_EVENT, onOpen);
 	}, [reset]);
 	const onClose = useCallback(() => { cancel(); setOpen(false); }, [cancel]);
+	// A blockout can land anywhere the video's camera stood, so the view is
+	// framed on the whole set once it is written: an import that left the
+	// viewport looking at empty floor reads as a failure.
+	const startAndFrame = useCallback(async (file, options) => {
+		const result = await start(file, options);
+		if (result) frameAll?.();
+		return result;
+	}, [start, frameAll]);
 	if (!open) return null;
-	return <VideoImportPanel key={opens} onClose={onClose} state={state} onStart={start} onCancel={cancel} />;
+	return <VideoImportPanel key={opens} onClose={onClose} state={state} onStart={startAndFrame} onCancel={cancel} />;
 }

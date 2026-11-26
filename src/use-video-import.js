@@ -15,7 +15,7 @@ async function resolveModel(transport, named) {
 	}
 }
 
-const IDLE = Object.freeze({ stage: "idle", message: "", error: null, entities: 0, frames: 0, subject: "", running: false });
+const IDLE = Object.freeze({ stage: "idle", message: "", error: null, entities: 0, frames: 0, fitted: 0, subject: "", running: false });
 
 /**
  * One reference video -> a blockout in the set.
@@ -51,9 +51,10 @@ export function useVideoImport({ run, readContext }) {
 					message: stage.message ?? current.message,
 					entities: stage.entities ?? current.entities,
 					frames: stage.frames ?? current.frames,
+					fitted: stage.fitted ?? current.fitted,
 				})),
 			});
-			setState({ stage: "done", message: "", error: null, entities: result.ids.length, frames: result.frames, subject: result.graph.subject, running: false });
+			setState({ stage: "done", message: "", error: null, entities: result.ids.length, frames: result.frames, fitted: result.fitted, subject: result.graph.subject, running: false });
 			return result;
 		} catch (error) {
 			const cancelled = error?.name === "AbortError";

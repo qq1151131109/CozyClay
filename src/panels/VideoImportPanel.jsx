@@ -61,6 +61,11 @@ export default function VideoImportPanel({ onClose, state, onStart, onCancel }) 
 						{ko(`Placed ${state.entities} set pieces and the camera.`,
 							`도형 ${state.entities}개와 카메라를 배치했습니다.`,
 							`已放置 ${state.entities} 个基本体和机位。`)}
+						{state.fitted
+							? ko(` ${state.fitted} side${state.fitted === 1 ? "" : "s"} fitted to the stage's limits.`,
+								` 스테이지 한계에 맞춘 면 ${state.fitted}개.`,
+								` ${state.fitted} 个尺寸已调整到舞台范围内。`)
+							: null}
 					</p>
 				) : null}
 			</section>

@@ -40,9 +40,15 @@ const SCENE_GRAPH_LIMITS = Object.freeze({
 	nameLength: 40,
 	subjectLength: 160,
 	extentM: 80,
-	minSideM: 0.02,
 	focalMm: [14, 85],
 });
+
+/** The smallest scale the stage represents (OBJECT_SCALE_LIMITS.min). A size
+ * below its kind's base times this cannot be written honestly, so it is fitted
+ * up to it and counted rather than refused: a thin wall panel is a normal set
+ * piece, not a broken answer. */
+const MIN_SCALE = 0.01;
+const minSide = (kind, axis) => Math.max(SET_PIECE_BASE[kind][axis] * MIN_SCALE, MIN_SCALE);
 
 const refuse = (path, error) => ({ ok: false, path, error });
 const isRecord = (value) => Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -78,10 +84,11 @@ export function validateSceneGraph(value) {
 	if (!isRecord(value)) return refuse("$", "the answer was not one object");
 	if (value.version !== SCENE_GRAPH_VERSION) return refuse("$.version", `version must be ${SCENE_GRAPH_VERSION}`);
 	if (value.units !== undefined && value.units !== "m") return refuse("$.units", 'units must be "m"');
-	const { entities: cap, extentM, minSideM, nameLength, subjectLength } = SCENE_GRAPH_LIMITS;
+	const { entities: cap, extentM, nameLength, subjectLength } = SCENE_GRAPH_LIMITS;
 	if (!Array.isArray(value.entities) || !value.entities.length) return refuse("$.entities", "entities must be a non-empty list");
 	if (value.entities.length > cap) return refuse("$.entities", `at most ${cap} entities`);
 	const entities = [];
+	let fitted = 0;
 	for (const [index, raw] of value.entities.entries()) {
 		const at = `$.entities[${index}]`;
 		if (!isRecord(raw)) return refuse(at, "must be an object");
@@ -89,22 +96,31 @@ export function validateSceneGraph(value) {
 		if (!isTriple(raw.position)) return refuse(`${at}.position`, "must be three numbers");
 		if (raw.position.some((axis) => Math.abs(axis) > extentM)) return refuse(`${at}.position`, `every axis must stay inside ${extentM} m`);
 		if (!isTriple(raw.size)) return refuse(`${at}.size`, "must be three numbers [width, height, depth]");
-		const flat = raw.kind === "plane";
-		const [width, height, depth] = raw.size;
-		if (!(width >= minSideM) || !(depth >= minSideM)) return refuse(`${at}.size`, `width and depth must be at least ${minSideM} m`);
-		if (!flat && !(height >= minSideM)) return refuse(`${at}.size`, `height must be at least ${minSideM} m`);
-		if (!flat && height > extentM) return refuse(`${at}.size`, `height must stay inside ${extentM} m`);
 		if (raw.rot !== undefined && !isNumber(raw.rot)) return refuse(`${at}.rot`, "must be a number of degrees");
+		const flat = raw.kind === "plane";
+		// A size the stage cannot represent is fitted into what it can, and the
+		// count is reported: refusing the whole import over one thin panel is
+		// worse than standing a 1 cm panel where the answer asked for 2 mm.
+		const size = [0, 1, 2].map((axis) => {
+			const asked = raw.size[axis];
+			if (flat && axis === 1) return 0;
+			const floor = minSide(raw.kind, axis);
+			const fittedSide = Math.min(Math.max(asked, floor), extentM);
+			if (Math.abs(fittedSide - asked) > 1e-6) fitted += 1;
+			return round(fittedSide);
+		});
+		if (size[1] > extentM) return refuse(`${at}.size`, `height must stay inside ${extentM} m`);
 		// The stage places an object by its base, but the contract speaks in
 		// centres: a shape whose centre is lower than its half-height would sink
-		// through the floor, so it is refused rather than clamped up.
-		if (raw.position[1] - height / 2 < -1e-6) return refuse(`${at}.position`, "the shape would stand below the floor");
+		// through the floor, so it is stood on the floor instead of sinking.
+		const dropped = raw.position[1] - size[1] / 2;
+		if (dropped < -1e-6) fitted += 1;
 		const name = typeof raw.name === "string" && raw.name.trim() ? raw.name.trim().slice(0, nameLength) : raw.kind;
 		entities.push({
 			kind: raw.kind,
 			name,
-			position: raw.position.map((axis) => round(axis)),
-			size: [round(width), flat ? 0 : round(height), round(depth)],
+			position: [round(raw.position[0]), round(Math.max(raw.position[1], size[1] / 2)), round(raw.position[2])],
+			size,
 			rot: round(((Number(raw.rot) || 0) % 360 + 360) % 360),
 		});
 	}
@@ -119,6 +135,9 @@ export function validateSceneGraph(value) {
 	if (samePlace) return refuse("$.camera.lookAt", "the camera would look at its own position");
 	return {
 		ok: true,
+		// How many sides or floor positions the stage had to fit to be able to
+		// write them; the import reports it instead of hiding the change.
+		fitted,
 		graph: {
 			version: SCENE_GRAPH_VERSION,
 			units: "m",
@@ -147,7 +166,6 @@ export function sceneGraphScale(entity) {
 export function sceneGraphBaseY(entity) {
 	return round(Math.max(0, entity.position[1] - entity.size[1] / 2));
 }
-
 /** The bus commands a graph becomes, in order. Object ids are only known once
  * an add has run, so the plan carries the scale the importer applies next. */
 export function sceneGraphPlan(graph) {
