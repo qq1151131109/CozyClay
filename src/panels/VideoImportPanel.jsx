@@ -58,9 +58,9 @@ export default function VideoImportPanel({ onClose, state, onStart, onCancel }) 
 				{state?.error ? <p className="video-import-error" role="alert">{state.error}</p> : null}
 				{done ? (
 					<p className="video-import-done">
-						{ko(`Placed ${state.entities} set pieces and the camera. One undo removes them.`,
-							`도형 ${state.entities}개와 카메라를 배치했습니다. 실행 취소 한 번이면 지워집니다.`,
-							`已放置 ${state.entities} 个基本体和机位。撤销一次即可移除。`)}
+						{ko(`Placed ${state.entities} set pieces and the camera.`,
+							`도형 ${state.entities}개와 카메라를 배치했습니다.`,
+							`已放置 ${state.entities} 个基本体和机位。`)}
 					</p>
 				) : null}
 			</section>
