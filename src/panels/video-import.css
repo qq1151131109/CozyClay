@@ -1,0 +1,120 @@
+.video-import-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 80;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgb(0 0 0 / 45%);
+}
+
+.video-import {
+	width: min(520px, calc(100vw - 40px));
+	padding: 18px 20px 20px;
+	border: 1px solid var(--line);
+	border-radius: var(--radius, 10px);
+	background: var(--panel);
+	color: var(--fg);
+	box-shadow: var(--shadow-lg);
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.video-import-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.video-import-head h2 {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.video-import-close {
+	border: 0;
+	background: transparent;
+	color: var(--muted);
+	font-size: 18px;
+	line-height: 1;
+	cursor: pointer;
+	padding: 2px 4px;
+}
+
+.video-import-close:disabled {
+	cursor: default;
+	opacity: 0.4;
+}
+
+.video-import-hint {
+	margin: 0;
+	color: var(--muted);
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+.video-import-subject {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	font-size: 12px;
+	color: var(--muted);
+}
+
+.video-import-subject input {
+	padding: 6px 8px;
+	border: 1px solid var(--line);
+	border-radius: 6px;
+	background: var(--card2);
+	color: var(--fg);
+	font: inherit;
+}
+
+.video-import-actions {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.video-import-actions button {
+	padding: 7px 12px;
+	border: 1px solid var(--line);
+	border-radius: 6px;
+	background: var(--card2);
+	color: var(--fg);
+	cursor: pointer;
+	font: inherit;
+}
+
+.video-import-actions button:disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+
+.video-import-run {
+	border-color: var(--accent) !important;
+	background: var(--accent) !important;
+	color: var(--on-accent) !important;
+}
+
+.video-import-status {
+	margin: 0;
+	font-size: 12px;
+	color: var(--muted);
+}
+
+.video-import-error {
+	margin: 0;
+	font-size: 12px;
+	color: #e5484d;
+	line-height: 1.5;
+}
+
+.video-import-done {
+	margin: 0;
+	font-size: 12px;
+	color: var(--fg);
+}
