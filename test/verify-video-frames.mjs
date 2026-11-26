@@ -2,6 +2,7 @@
 // Frame sampling for a video import, against fake media elements: the timing
 // math, the downscale, and the two ways a browser can refuse a clip.
 import { extractFrames, frameSize, frameTimes, FRAME_PLAN } from "../src/video-frames.js";
+import { detectShotBoundaries, frameDifference } from "../src/video-timeline.js";
 
 let failures = 0;
 function expect(name, condition, detail = "") {
@@ -61,6 +62,17 @@ function fakeCanvas() {
 }
 
 // ── The slice math ─────────────────────────────────────────────────────────
+const dark = new Uint8Array(16).fill(24);
+const bright = new Uint8Array(16).fill(224);
+expect("a hard cut scores as a large frame change", frameDifference(dark, bright) > 0.7);
+expect("small changes within a shot do not become cuts", frameDifference(dark, Uint8Array.from(dark, (value) => value + 4)) < 0.03);
+const cuts = detectShotBoundaries([
+	{ index: 0, timestamp: 0, signature: dark },
+	{ index: 1, timestamp: 1 / 24, signature: Uint8Array.from(dark, (value) => value + 4) },
+	{ index: 2, timestamp: 2 / 24, signature: bright },
+], { threshold: 0.7, minShotFrames: 1 });
+expect("a cut is assigned to the first frame of the new shot", cuts.length === 1 && cuts[0].frameIndex === 2 && cuts[0].timestamp === 2 / 24, JSON.stringify(cuts));
+
 expect("four stills land in the middle of four equal slices", JSON.stringify(frameTimes(10)) === "[1.25,3.75,6.25,8.75]", JSON.stringify(frameTimes(10)));
 expect("a one-second clip still spreads its four stills across the second", JSON.stringify(frameTimes(1, 4)) === "[0.125,0.375,0.625,0.875]", JSON.stringify(frameTimes(1, 4)));
 expect("a clip with no length yields no stills", frameTimes(0).length === 0 && frameTimes(Number.NaN).length === 0);

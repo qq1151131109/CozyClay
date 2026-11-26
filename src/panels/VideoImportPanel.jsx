@@ -8,7 +8,7 @@ import "./video-import.css";
  * file only reports what it is doing and offers a cancel. The session remounts
  * it on every open, so the subject never leaks from the last import.
  */
-export default function VideoImportPanel({ onClose, state, clip, onStart, onCancel }) {
+export default function VideoImportPanel({ onClose, state, clip, onStart, onCancel, onAnalyze }) {
 	const fileRef = useRef(null);
 	const [subject, setSubject] = useState("");
 	const busy = Boolean(state?.running);
@@ -22,9 +22,9 @@ export default function VideoImportPanel({ onClose, state, clip, onStart, onCanc
 					<button type="button" className="video-import-close" onClick={close} disabled={busy} aria-label={ko("Close", "닫기", "关闭")}>×</button>
 				</header>
 				<p className="video-import-hint">
-					{ko("Four stills are read from the clip, and the agent describes the set as a few primitives plus the camera that stood there.",
-						"클립에서 스틸 네 장을 읽고, 에이전트가 세트를 몇 개의 도형과 카메라로 설명합니다.",
-						"从片段中读取四张静帧，由智能体把场景描述为几个基本体和当时的机位。")}
+{ko("For a single uncut shot: four stills describe a static set and one camera. Use frame-by-frame shot analysis above for edited clips and motion checks.",
+							"단일 샷의 스틸 네 장으로 정적 세트와 카메라를 만듭니다. 편집된 영상은 프레임별 샷 분석을 사용하세요.",
+							"快速导入仅适合单个未剪辑镜头：四张静帧建立静态布景和一个机位。多镜头素材与动作检查请使用「逐帧分镜与人物检查」。")}
 				</p>
 				<label className="video-import-subject">
 					<span>{ko("What is the shot? (optional)", "이 샷은 무엇입니까? (선택)", "这个镜头是什么？（可选）")}</span>
@@ -41,9 +41,10 @@ export default function VideoImportPanel({ onClose, state, clip, onStart, onCanc
 						if (file) void onStart(file, { subject });
 					}}
 				/>
-				<div className="video-import-actions">
-					<button type="button" className="video-import-run" disabled={busy} onClick={() => fileRef.current?.click()}>
-						{ko("Choose a video…", "비디오 선택…", "选择视频…")}
+					<div className="video-import-actions">
+						{onAnalyze ? <button type="button" disabled={busy || clip?.phase === "rendering"} onClick={onAnalyze} data-testid="video-analysis-open">{ko("Frame-by-frame shot analysis", "프레임별 샷 분석", "逐帧分镜与人物检查")}</button> : null}
+						<button type="button" className="video-import-run" disabled={busy} onClick={() => fileRef.current?.click()}>
+						{ko("Static set + 4-second preview…", "정적 세트 + 4초 미리보기…", "静态布景与4秒预览…")}
 					</button>
 					{busy ? <button type="button" onClick={onCancel}>{ko("Cancel", "취소", "取消")}</button> : null}
 				</div>

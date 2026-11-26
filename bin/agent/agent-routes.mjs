@@ -10,7 +10,7 @@ import { createAgentTools, SYSTEM_PROMPT, pickWorkspace } from "./agent-tools.mj
 import { createVideoAdapters, validateFalVideoRequest } from "./video-adapters.mjs";
 import { createSessionStore, transcriptFromHistory } from "./session-store.mjs";
 import { createAgentRunner } from "./agent-runner.mjs";
-import { createProviderRoutes } from "./provider-routes.mjs";
+import { createMediaProviderRoutes as createProviderRoutes } from "./media-provider-routes.mjs";
 import { STUDIO_SYSTEM_PROMPT_STORYBOARD } from "./studio-prompt.mjs";
 import { studioTransaction } from "./studio-turn-transaction.mjs";
 import { agentFailureCode, failureCodeOf, frameCodeOf } from "./agent-failure-codes.mjs";

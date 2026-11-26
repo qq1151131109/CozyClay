@@ -21,6 +21,18 @@ video frames into MP4 files in the browser.
 - Source: https://github.com/Vanilagy/mediabunny
 - License text: https://github.com/Vanilagy/mediabunny/blob/main/LICENSE
 
+## MediaPipe Tasks Vision
+
+The optional frame analysis tool uses `@mediapipe/tasks-vision` and its bundled
+WebAssembly runtime for local human-pose observations. Pose inference runs on
+the user's device. The versioned Pose Landmarker Lite task asset is downloaded
+from Google's model storage when the user starts pose analysis; it is not
+bundled in this repository.
+
+- SDK license: Apache-2.0
+- Source and license: https://github.com/google-ai-edge/mediapipe
+- Model documentation: https://developers.google.com/edge/mediapipe/solutions/vision/pose_landmarker
+
 ## NVIDIA ARDY
 
 CozyClay provides an optional bridge and data-conversion workflow for externally installed [ARDY](https://github.com/nv-tlabs/ardy), an interactive human-motion generation project from NVIDIA Research.
