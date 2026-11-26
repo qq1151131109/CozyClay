@@ -68,7 +68,9 @@ try {
 	check("the picker accepts video only", await evalJs("document.querySelector('.video-import input[type=file]')?.accept === 'video/*'"));
 
 	// 2. Frame sampling on a real clip: a recorded webm has no length in its
-	//    header, so this also covers the seek-past-the-end read.
+	//    header, so this also covers the seek-past-the-end read. The paint is a
+	//    corner of a room, not a flat colour: a blank clip leaves the model
+	//    nothing to describe, and "no set pieces" is the honest answer to it.
 	const probe = await evalJs(`(async () => {
 		const { extractFrames } = await import('/src/video-frames.js');
 		const canvas = document.createElement('canvas');
@@ -83,8 +85,15 @@ try {
 		await new Promise((resolve) => {
 			const paint = () => {
 				const seconds = (performance.now() - started) / 1000;
-				context.fillStyle = seconds < 0.5 ? '#c33' : seconds < 1 ? '#3c3' : '#33c';
+				context.fillStyle = '#8d8d8d';
 				context.fillRect(0, 0, 640, 360);
+				context.fillStyle = '#d8d8d8';
+				context.fillRect(0, 150, 260, 210);
+				context.fillRect(320, 120, 320, 240);
+				context.fillStyle = '#b4b4b4';
+				context.fillRect(360, 250, 240, 70);
+				context.fillStyle = '#3a3a3a';
+				context.fillRect(60, 60, 80, 90);
 				if (seconds < 1.6) requestAnimationFrame(paint); else resolve();
 			};
 			paint();

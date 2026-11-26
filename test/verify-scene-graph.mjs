@@ -109,7 +109,9 @@ expect("a plane scales width and depth but never its height", JSON.stringify(pla
 
 // ── The plan, and writing it ───────────────────────────────────────────────
 const plan = sceneGraphPlan(normalized.graph);
-expect("the plan is one add per entity then the camera", plan.length === 3 && plan[2].action === "shot.placeCamera", plan.map((op) => op.action).join(","));
+expect("the plan is one add per entity, then a shot, then the camera",
+	plan.length === 4 && plan[2].action === "shot.create" && plan[3].action === "shot.placeCamera",
+	plan.map((op) => op.action).join(","));
 expect("an add carries the catalogue kind, its name and its placement",
 	plan[0].args.kind === "cube" && plan[0].args.name === "bench" && plan[0].args.placement.z === 0.4);
 expect("the contract's centre becomes the base the bus places by",
@@ -117,7 +119,7 @@ expect("the contract's centre becomes the base the bus places by",
 	`base=${sceneGraphBaseY({ position: [0, 1.5, 0], size: [1, 1, 1] })} bench=${plan[0].args.placement.y}`);
 expect("a plane's centre is already its base", plan[1].args.placement.y === 0);
 expect("the camera op carries position, aim and lens",
-	plan[2].args.lookAtY === 1 && plan[2].args.focalMm === 35 && plan[2].args.z === -3);
+	plan[3].args.lookAtY === 1 && plan[3].args.focalMm === 35 && plan[3].args.z === -3);
 
 const calls = [];
 let made = 0;
@@ -131,6 +133,8 @@ expect("every add lands and its id comes back", JSON.stringify(ids) === '["made-
 expect("a size that differs from the base is applied as a scale",
 	calls.some(([action, args]) => action === "object.update" && args.id === "made-1" && args.patch.scaleZ === 0.7));
 expect("the camera is placed last", calls[calls.length - 1][0] === "shot.placeCamera");
+expect("a shot is made so the export has something to render",
+	calls.some(([action]) => action === "shot.create"));
 
 console.log(failures === 0 ? "scene graph: all checks passed" : `${failures} scene graph check(s) failed`);
 process.exitCode = failures === 0 ? 0 : 1;
