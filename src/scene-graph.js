@@ -85,7 +85,7 @@ export function validateSceneGraph(value) {
 	if (value.version !== SCENE_GRAPH_VERSION) return refuse("$.version", `version must be ${SCENE_GRAPH_VERSION}`);
 	if (value.units !== undefined && value.units !== "m") return refuse("$.units", 'units must be "m"');
 	const { entities: cap, extentM, nameLength, subjectLength } = SCENE_GRAPH_LIMITS;
-	if (!Array.isArray(value.entities) || !value.entities.length) return refuse("$.entities", "entities must be a non-empty list");
+	if (!Array.isArray(value.entities) || !value.entities.length) return refuse("$.entities", "the answer described no set pieces");
 	if (value.entities.length > cap) return refuse("$.entities", `at most ${cap} entities`);
 	const entities = [];
 	let fitted = 0;
@@ -179,6 +179,9 @@ export function sceneGraphPlan(graph) {
 		scale: sceneGraphScale(entity),
 	}));
 	const { position, lookAt, focalMm } = graph.camera;
+	// A shot, so the export has something to render: an import that left only
+	// objects and a camera had nothing to play back or render to an mp4.
+	plan.push({ action: "shot.create", args: {}, scale: null });
 	plan.push({
 		action: "shot.placeCamera",
 		args: { x: position[0], y: position[1], z: position[2], lookAtX: lookAt[0], lookAtY: lookAt[1], lookAtZ: lookAt[2], focalMm },

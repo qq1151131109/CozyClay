@@ -118,3 +118,23 @@
 	font-size: 12px;
 	color: var(--fg);
 }
+
+.video-import-clip {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.video-import-clip video {
+	width: 100%;
+	border: 1px solid var(--line);
+	border-radius: 6px;
+	background: #000;
+}
+
+.video-import-download {
+	font-size: 12px;
+	color: var(--accent);
+	text-decoration: underline;
+	align-self: flex-start;
+}

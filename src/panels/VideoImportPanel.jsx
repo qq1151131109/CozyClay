@@ -8,7 +8,7 @@ import "./video-import.css";
  * file only reports what it is doing and offers a cancel. The session remounts
  * it on every open, so the subject never leaks from the last import.
  */
-export default function VideoImportPanel({ onClose, state, onStart, onCancel }) {
+export default function VideoImportPanel({ onClose, state, clip, onStart, onCancel }) {
 	const fileRef = useRef(null);
 	const [subject, setSubject] = useState("");
 	const busy = Boolean(state?.running);
@@ -66,6 +66,26 @@ export default function VideoImportPanel({ onClose, state, onStart, onCancel }) 
 								` 스테이지 한계에 맞춘 면 ${state.fitted}개.`,
 								` ${state.fitted} 个尺寸已调整到舞台范围内。`)
 							: null}
+					</p>
+				) : null}
+				{clip?.phase === "rendering" ? (
+					<p className="video-import-status" role="status">
+						{ko("Rendering the white-model clip…", "화이트 모델 클립을 렌더링하는 중…", "正在渲染白模视频…")}
+					</p>
+				) : null}
+				{clip?.phase === "ready" ? (
+					<div className="video-import-clip">
+						<video src={clip.url} controls playsInline data-testid="video-import-clip" />
+						<a className="video-import-download" href={clip.url} download={clip.name} data-testid="video-import-download">
+							{ko("Download the clip", "클립 내려받기", "下载白模视频")}
+						</a>
+					</div>
+				) : null}
+				{clip?.phase === "failed" ? (
+					<p className="video-import-status">
+						{ko("The clip did not render here. File › Export renders this shot.",
+							"이 브라우저에서는 클립을 렌더링하지 못했습니다. 파일 › 내보내기로 이 샷을 렌더링하세요.",
+							"此处未能渲染白模视频。可用「文件 › 导出」渲染该镜头。")}
 					</p>
 				) : null}
 			</section>

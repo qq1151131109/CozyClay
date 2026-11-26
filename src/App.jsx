@@ -4495,7 +4495,7 @@ export default function App() {
 		selectTimelineShot, clearMotion,
 		spawnCharacter, stopShotRecording, retryExport, poseRefusal: poseEntry.blocked ? poseEntry.plan.reason : null,
 		beginWorkspaceResize, frameAll, setAxisView,
-		preferencesOpen, setPreferencesOpen,
+		preferencesOpen, setPreferencesOpen, renderBlockoutClip: () => runShotExport({ startFrame: 0, endFrame: 95, download: false }),
 		flySpeed, liveHubStatus: liveWorkspaceHandle ? "connected" : "disconnected",
 		agentOpen: !agentCollapsed,
 		toggleAgent: () => window.dispatchEvent(new CustomEvent("cozyclay:agent-panel-toggle")),
