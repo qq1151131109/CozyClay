@@ -67,10 +67,7 @@ const cases = [
 	["an unknown kind", { ...good(), entities: [{ ...good().entities[0], kind: "torus" }] }, "$.entities[0].kind"],
 	["a position that is not three numbers", { ...good(), entities: [{ ...good().entities[0], position: [0, 1] }] }, "$.entities[0].position"],
 	["a position outside the set", { ...good(), entities: [{ ...good().entities[0], position: [0, 0, 5000] }] }, "$.entities[0].position"],
-	["a zero width", { ...good(), entities: [{ ...good().entities[0], size: [0, 1, 1] }] }, "$.entities[0].size"],
-	["a negative height on a solid", { ...good(), entities: [{ ...good().entities[0], size: [1, -1, 1] }] }, "$.entities[0].size"],
 	["a rot that is not a number", { ...good(), entities: [{ ...good().entities[0], rot: "left" }] }, "$.entities[0].rot"],
-	["a shape centred below the floor", { ...good(), entities: [{ ...good().entities[0], position: [0, 0.1, 0], size: [1, 1, 1] }] }, "$.entities[0].position"],
 	["a missing camera", { ...good(), camera: undefined }, "$.camera"],
 	["a camera with no lookAt", { ...good(), camera: { position: [0, 1, 0] } }, "$.camera.lookAt"],
 	["a focal outside the lens range", { ...good(), camera: { ...good().camera, focalMm: 300 } }, "$.camera.focalMm"],
@@ -85,6 +82,17 @@ for (const [name, value, path] of cases) {
 const normalized = refusal(good());
 expect("a good graph validates", normalized.ok, JSON.stringify(normalized));
 expect("a plane keeps its height at 0", normalized.graph.entities[1].size[1] === 0);
+expect("a clean answer fits nothing", normalized.fitted === 0, String(normalized.fitted));
+
+// ── What the stage cannot represent is fitted, and counted ─────────────────
+const thin = refusal({ ...good(), entities: [{ ...good().entities[0], position: [0, 0.5, 0], size: [0.002, 1, 4] }] });
+expect("a side below what the stage represents is fitted up, not refused", thin.ok && thin.graph.entities[0].size[0] === 0.01, JSON.stringify(thin));
+expect("the fit is counted so the import can report it", thin.fitted === 1, String(thin.fitted));
+const sunk = refusal({ ...good(), entities: [{ ...good().entities[0], position: [0, 0.1, 0], size: [1, 1, 1] }] });
+expect("a shape centred below the floor is stood on it, not refused",
+	sunk.ok && sunk.graph.entities[0].position[1] === 0.5 && sunk.fitted === 1, JSON.stringify(sunk));
+const huge = refusal({ ...good(), entities: [{ ...good().entities[0], size: [500, 1, 1] }] });
+expect("a side past the set is fitted down, not refused", huge.ok && huge.graph.entities[0].size[0] === 80, JSON.stringify(huge));
 expect("a negative rot wraps into 0-360", refusal({ ...good(), entities: [{ ...good().entities[0], rot: -90 }] }).graph.entities[0].rot === 270);
 expect("a missing rot reads as 0", refusal({ ...good(), entities: [{ ...good().entities[0], rot: undefined }] }).graph.entities[0].rot === 0);
 expect("a missing name falls back to the kind", refusal({ ...good(), entities: [{ ...good().entities[0], name: "  " }] }).graph.entities[0].name === "cube");
